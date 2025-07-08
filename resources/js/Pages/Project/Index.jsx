@@ -1,9 +1,30 @@
 import Pagination from "@/Components/Pagination";
+import SelectInput from "@/Components/SelectInput";
+import TextInput from "@/Components/TextInput";
 import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, projects }) {
+export default function Index({ auth, projects, queryParams = null }) {
+    queryParams = queryParams || {};
+    const searchFieldChanged = (field, value) => {
+        // Handle search field changes
+        if (value) {
+            queryParams[field] = value;
+        } else {
+            delete queryParams[field];
+        }
+
+        router.get(route('projects.index'), queryParams);
+    };
+
+    const onKeyPress = (field, e) => {
+        // Handle key press events
+        if(e.key !== 'Enter') return;
+
+        searchFieldChanged(field, e.target.value);
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -29,6 +50,27 @@ export default function Index({ auth, projects }) {
                                         <th className="px-3 py-3">Due Date</th>
                                         <th className="px-3 py-3">Created By</th>
                                         <th className="px-3 py-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
+                                    <tr className="text-nowrap">
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3">
+                                            <TextInput className="w-full" defaultValue={queryParams.name} placeholder="Search by name" onBlur={(e) => searchFieldChanged('name', e.target.value)} onKeyPress={(e) => onKeyPress('name', e)} />
+                                        </th>
+                                        <th className="px-3 py-3">
+                                            <SelectInput className="w-full" defaultValue={queryParams.status} onChange={(e) => searchFieldChanged('status', e.target.value)}>
+                                                <option value="">Select Status</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="in_progress">In Progress</option>
+                                                <option value="completed">Completed</option>
+                                            </SelectInput>
+                                        </th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
