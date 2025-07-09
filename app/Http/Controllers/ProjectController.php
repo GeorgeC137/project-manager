@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
@@ -16,6 +17,9 @@ class ProjectController extends Controller
     {
         $query = Project::query();
 
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
         if (request()->has('name')) {
             $query->where('name', 'like', '%' . request('name') . '%');
         }
@@ -24,10 +28,19 @@ class ProjectController extends Controller
             $query->where('status', request('status'));
         }
 
-        $projects = $query->paginate(10)->onEachSide(1);
+        if (request('created_by')) {
+            $query->where('created_by', request('created_by'));
+        }
+
+        $projects = $query
+            ->orderBy($sortField, $sortDirection)
+            ->paginate(10)
+            ->onEachSide(1);
+
         return inertia('Project/Index', [
             'projects' => ProjectResource::collection($projects),
             'queryParams' => request()->query() ?: null,
+            'users' => User::select('id', 'name')->get(),
         ]);
     }
 
