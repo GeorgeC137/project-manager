@@ -5,8 +5,9 @@ import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import TableHeading from "@/Components/TableHeading";
+import { useEffect, useState } from "react";
 
-export default function Index({ auth, projects, queryParams = null, users = [] }) {
+export default function Index({ auth, projects, queryParams = null, users = [], success, error }) {
     queryParams = queryParams || {};
     const searchFieldChanged = (field, value) => {
         // Handle search field changes
@@ -38,19 +39,39 @@ export default function Index({ auth, projects, queryParams = null, users = [] }
         router.get(route('projects.index'), queryParams);
     }
 
+    const [showSuccess, setShowSuccess] = useState(!!success);
+
+    useEffect(() => {
+        if (success) {
+            setShowSuccess(true);
+            const timer = setTimeout(() => setShowSuccess(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Projects
-                </h2>
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        Projects
+                    </h2>
+                    <Link href={route('projects.create')} className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700">
+                        Add New
+                    </Link>
+                </div>
             }
         >
             <Head title="Projects" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    {showSuccess && (
+                        <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4" role="alert">
+                            {success}
+                        </div>
+                    )}
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="overflow-auto">
