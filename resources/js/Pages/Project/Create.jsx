@@ -1,6 +1,7 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput";
+import Spinner from "@/Components/Spinner";
 import TextAreaInput from "@/Components/TextAreaInput";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -21,6 +22,10 @@ export default function Create({ auth }) {
             data,
             onSuccess: () => {
                 reset();
+            },
+            onError: (errors) => {
+                // Handle error if needed
+                console.log(errors);
             },
         });
     }
@@ -131,8 +136,8 @@ export default function Create({ auth }) {
                                 >
                                     Cancel
                                 </Link>
-                                <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
-                                    Submit
+                                <button disabled={processing} className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600" style={{ cursor: processing ? "not-allowed" : "pointer", minHeight: "28px" }}>
+                                    {processing ? <Spinner /> : "Submit"}
                                 </button>
                             </div>
                         </form>

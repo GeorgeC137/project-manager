@@ -118,7 +118,7 @@ export default function TasksTable({ tasks, users = [], queryParams = null, hide
                     </tbody>
                 </table>
             </div>
-            <Pagination links={tasks.meta.links} />
+            <Pagination links={tasks.meta.links} queryParams={queryParams} />
         </>
     )
 }
