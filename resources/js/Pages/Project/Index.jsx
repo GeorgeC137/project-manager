@@ -147,7 +147,19 @@ export default function Index({ auth, projects, queryParams = null, users = [], 
                                             <td className="px-3 py-2">{project.createdBy.name}</td>
                                             <td className="px-3 py-2 text-nowrap">
                                                 <Link href={route('projects.edit', project.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1">Edit</Link>
-                                                <Link href={route('projects.destroy', project.id)} method="delete" className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">Delete</Link>
+                                                <Link
+                                                    href={route('projects.destroy', project.id)}
+                                                    method="delete"
+                                                    as="button"
+                                                    className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
+                                                    onClick={e => {
+                                                        if (!window.confirm("Are you sure you want to delete this project?")) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Link>
                                             </td>
                                         </tr>))}
                                     </tbody>

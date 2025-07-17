@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Enums\ProjectStatus;
-use App\ProjectStatus as AppProjectStatus;
 
 class StoreProjectRequest extends FormRequest
 {

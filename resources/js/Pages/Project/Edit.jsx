@@ -7,18 +7,19 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Create({ auth }) {
+export default function Edit({ auth, project, users }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        image: "",
-        name: "",
-        status: "",
-        description: "",
-        due_date: "",
+        image: project.image,
+        name: project.name || "",
+        status: project.status || "",
+        description: project.description || "",
+        due_date: project.due_date || "",
+        _method: "PUT",
     })
 
     const onSubmit = (e) => {
         e.preventDefault();
-        post(route("projects.store"), {
+        post(route("projects.update", { id: project.id }), {
             data,
             onSuccess: () => {
                 reset();
@@ -39,17 +40,22 @@ export default function Create({ auth }) {
             header={
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Create New Project
+                        {`Edit "${data.name}" Project`}
                     </h2>
                 </div>
             }
         >
-            <Head title="Create Project" />
+            <Head title="Edit Project" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <form onSubmit={onSubmit} className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            {project.image_path && (
+                                <div className="mb-4">
+                                    <img src={project.image_path} alt={project.name} className="max-w-xs" />
+                                </div>
+                            )}
                             <div>
                                 <InputLabel
                                     htmlFor="project_image_path"
@@ -60,7 +66,7 @@ export default function Create({ auth }) {
                                     type="file"
                                     name="image"
                                     className="mt-1 block w-full"
-                                    onChange={onFileChange}
+                                    onChange={(e) => setData("image", e.target.files[0])}
                                 />
                                 <InputError message={errors.image} className="mt-2" />
                             </div>
@@ -117,6 +123,7 @@ export default function Create({ auth }) {
 
                                 <SelectInput
                                     name="status"
+                                    value={data.status}
                                     id="project_status"
                                     className="mt-1 block w-full"
                                     onChange={(e) => setData("status", e.target.value)}
