@@ -7,7 +7,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Edit({ auth, project, users }) {
+export default function Edit({ auth, project }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         image: project.image,
         name: project.name || "",
