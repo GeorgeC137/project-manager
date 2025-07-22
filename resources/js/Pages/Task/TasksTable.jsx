@@ -46,7 +46,7 @@ export default function TasksTable({ tasks, users = [], queryParams = null, hide
                                 ID
                             </TableHeading>
                             <th className="px-3 py-3">Image</th>
-                            { !hideProjectColumn && <th className="px-3 py-3">Project Name</th> }
+                            {!hideProjectColumn && <th className="px-3 py-3">Project Name</th>}
                             <TableHeading name="name" sort_field={queryParams.sort_field} sort_direction={queryParams.sort_direction} sortChanged={sortChanged}>
                                 Name
                             </TableHeading>
@@ -112,7 +112,11 @@ export default function TasksTable({ tasks, users = [], queryParams = null, hide
                             <td className="px-3 py-2">{task.createdBy.name}</td>
                             <td className="px-3 py-2 text-nowrap">
                                 <Link href={route('tasks.edit', task.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1">Edit</Link>
-                                <Link href={route('tasks.destroy', task.id)} method="delete" className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">Delete</Link>
+                                <Link href={route('tasks.destroy', task.id)} onClick={e => {
+                                    if (!window.confirm("Are you sure you want to delete this project?")) {
+                                        e.preventDefault();
+                                    }
+                                }} method="delete" className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">Delete</Link>
                             </td>
                         </tr>))}
                     </tbody>
