@@ -48,6 +48,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     All Tasks
                                 </NavLink>
+                                <NavLink
+                                    href={route('tasks.myTasks')}
+                                    active={route().current('tasks.myTasks')}
+                                >
+                                    My Tasks
+                                </NavLink>
                             </div>
                         </div>
 
@@ -169,6 +175,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('tasks.index')}
                         >
                             All Tasks
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('tasks.myTasks')}
+                            active={route().current('tasks.myTasks')}
+                        >
+                            My Tasks
                         </ResponsiveNavLink>
                     </div>
 

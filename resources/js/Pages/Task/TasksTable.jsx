@@ -5,8 +5,12 @@ import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP } from "@/constants";
 import TableHeading from "@/Components/TableHeading";
 import { Link, router } from "@inertiajs/react";
 
-export default function TasksTable({ tasks, users = [], queryParams = null, hideProjectColumn = false }) {
+export default function TasksTable({ tasks, users = [], queryParams = null, hideProjectColumn = false, ...props }) {
     queryParams = queryParams || {};
+
+    // Ensure currentRoute is defined, fallback to 'tasks.index'
+    const routeName = props.currentRoute || 'tasks.index';
+
     const searchFieldChanged = (field, value) => {
         // Handle search field changes
         if (value) {
@@ -15,7 +19,7 @@ export default function TasksTable({ tasks, users = [], queryParams = null, hide
             delete queryParams[field];
         }
 
-        router.get(route('tasks.index'), queryParams);
+        router.get(route(routeName), queryParams);
     };
 
     const onKeyPress = (field, e) => {
@@ -34,7 +38,7 @@ export default function TasksTable({ tasks, users = [], queryParams = null, hide
             queryParams.sort_direction = 'asc';
         }
 
-        router.get(route('tasks.index'), queryParams);
+        router.get(route(routeName), queryParams);
     }
     return (
         <>

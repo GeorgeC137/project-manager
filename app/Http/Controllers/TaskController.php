@@ -49,6 +49,7 @@ class TaskController extends Controller
             'users' => User::select('id', 'name')->get(),
             'success' => session('success'),
             'error' => session('error'),
+            'currentRoute' => 'tasks.index', // Add this line
         ]);
     }
 
@@ -148,5 +149,40 @@ class TaskController extends Controller
         }
 
         return to_route('tasks.index')->with('success', "Task '{$name}' deleted successfully.");
+    }
+
+    public function myTasks()
+    {
+        $user = Auth::user();
+        $query = Task::query()->where('assigned_to', $user->id);
+
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+        if (request()->has('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
+        }
+
+        if (request('status')) {
+            $query->where('status', request('status'));
+        }
+
+        if (request('created_by')) {
+            $query->where('created_by', request('created_by'));
+        }
+
+        $tasks = $query
+            ->orderBy($sortField, $sortDirection)
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return inertia('Task/MyTasks', [
+            'tasks' => TaskResource::collection($tasks),
+            'queryParams' => request()->query() ?: null,
+            'users' => User::select('id', 'name')->get(),
+            'success' => session('success'),
+            'error' => session('error'),
+            'currentRoute' => 'tasks.myTasks', // Add this line
+        ]);
     }
 }
